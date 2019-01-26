@@ -1,0 +1,9 @@
+[package]
+name = "id3-image"
+version = "0.1.0"
+authors = ["Andrew Radev <andrey.radev@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+id3 = "0.2.5"
+image = "0.21.0"
