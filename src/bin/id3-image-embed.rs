@@ -5,7 +5,7 @@ fn main() {
     let args: Vec<_> = env::args().collect();
 
     if args.len() < 3 {
-        eprintln!("USAGE: id3-image <mp3-file> <image-file>");
+        eprintln!("USAGE: id3-image-embed <mp3-file> <image-file>");
         process::exit(1);
     }
 
