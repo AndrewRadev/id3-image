@@ -1,6 +1,8 @@
 use std::env;
 use std::process;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
+
+use id3_image::extract_image;
 
 fn main() {
     let args: Vec<_> = env::args().collect();
@@ -13,27 +15,9 @@ fn main() {
     let music_filename = args[1].clone();
     let image_filename = args.get(2).cloned().unwrap_or_else(|| replace_extension(&music_filename, "jpg"));
 
-    let tag = match id3::Tag::read_from_path(&music_filename) {
-        Ok(t) => t,
-        Err(e) => {
-            eprintln!("Error reading music file {}: {}", music_filename, e);
-            process::exit(1);
-        },
-    };
-
-    let first_picture = tag.pictures().next();
-
-    if let Some(p) = first_picture {
-        match image::load_from_memory(&p.data) {
-            Ok(image) => {
-                image.save(&image_filename);
-                println!("{}", image_filename);
-            },
-            Err(e) => {
-                eprintln!("Couldn't load image: {}", e);
-                process::exit(1);
-            }
-        };
+    if let Err(e) = extract_image(&music_filename, &image_filename) {
+        eprintln!("{}", e);
+        process::exit(1);
     }
 }
 
