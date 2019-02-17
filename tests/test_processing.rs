@@ -6,8 +6,9 @@ use id3_image::*;
 
 macro_rules! in_temp_dir {
     ($block:block) => {
-        let tmpdir = env::temp_dir();
+        let tmpdir = tempfile::tempdir().unwrap();
         env::set_current_dir(&tmpdir).unwrap();
+
         $block;
     }
 }
@@ -21,66 +22,6 @@ macro_rules! fixture {
 
         fs::copy(source_path, $filename).unwrap();
     }
-}
-
-#[test]
-fn test_successful_jpeg_image_embedding() {
-    in_temp_dir!({
-        fixture!("attempt_1_no_image.mp3");
-        fixture!("attempt_1.jpg");
-
-        {
-            let tag = id3::Tag::read_from_path("attempt_1_no_image.mp3").unwrap();
-            assert!(tag.pictures().count() == 0);
-        }
-
-        embed_image("attempt_1_no_image.mp3", "attempt_1.jpg").unwrap();
-
-        {
-            let tag = id3::Tag::read_from_path("attempt_1_no_image.mp3").unwrap();
-            assert!(tag.pictures().count() > 0);
-        }
-    });
-}
-
-#[test]
-fn test_successful_png_image_embedding() {
-    in_temp_dir!({
-        fixture!("attempt_1_no_image.mp3");
-        fixture!("attempt_1.png");
-
-        {
-            let tag = id3::Tag::read_from_path("attempt_1_no_image.mp3").unwrap();
-            assert!(tag.pictures().count() == 0);
-        }
-
-        embed_image("attempt_1_no_image.mp3", "attempt_1.png").unwrap();
-
-        {
-            let tag = id3::Tag::read_from_path("attempt_1_no_image.mp3").unwrap();
-            assert!(tag.pictures().count() > 0);
-        }
-    });
-}
-
-#[test]
-fn test_successful_image_embedding_in_a_file_that_already_has_an_image() {
-    in_temp_dir!({
-        fixture!("attempt_1.mp3");
-        fixture!("attempt_1.jpg");
-
-        {
-            let tag = id3::Tag::read_from_path("attempt_1.mp3").unwrap();
-            assert!(tag.pictures().count() > 0);
-        }
-
-        embed_image("attempt_1.mp3", "attempt_1.jpg").unwrap();
-
-        {
-            let tag = id3::Tag::read_from_path("attempt_1.mp3").unwrap();
-            assert!(tag.pictures().count() > 0);
-        }
-    });
 }
 
 #[test]
@@ -98,5 +39,74 @@ fn test_unsuccessful_image_embedding() {
         assert!(embed_image("attempt_1.jpg", "attempt_1_no_image.mp3").is_err());
         assert!(embed_image("attempt_1_no_image.mp3", "attempt_1_no_image.mp3").is_err());
         assert!(embed_image("attempt_1.jpg", "attempt_1.jpg").is_err());
+    });
+}
+
+#[test]
+fn test_successful_jpeg_image_embedding() {
+    in_temp_dir!({
+        fixture!("attempt_1_no_image.mp3");
+        fixture!("attempt_1.jpg");
+
+        let tag = id3::Tag::read_from_path("attempt_1_no_image.mp3").unwrap();
+        assert!(tag.pictures().count() == 0);
+
+        embed_image("attempt_1_no_image.mp3", "attempt_1.jpg").unwrap();
+
+        let tag = id3::Tag::read_from_path("attempt_1_no_image.mp3").unwrap();
+        assert!(tag.pictures().count() > 0);
+    });
+}
+
+#[test]
+fn test_successful_png_image_embedding() {
+    in_temp_dir!({
+        fixture!("attempt_1_no_image.mp3");
+        fixture!("attempt_1.png");
+
+        let tag = id3::Tag::read_from_path("attempt_1_no_image.mp3").unwrap();
+        assert!(tag.pictures().count() == 0);
+
+        embed_image("attempt_1_no_image.mp3", "attempt_1.png").unwrap();
+
+        let tag = id3::Tag::read_from_path("attempt_1_no_image.mp3").unwrap();
+        assert!(tag.pictures().count() > 0);
+    });
+}
+
+#[test]
+fn test_successful_image_embedding_in_a_file_that_already_has_an_image() {
+    in_temp_dir!({
+        fixture!("attempt_1.mp3");
+        fixture!("attempt_1.jpg");
+
+        let tag = id3::Tag::read_from_path("attempt_1.mp3").unwrap();
+        assert!(tag.pictures().count() > 0);
+
+        embed_image("attempt_1.mp3", "attempt_1.jpg").unwrap();
+
+        let tag = id3::Tag::read_from_path("attempt_1.mp3").unwrap();
+        assert!(tag.pictures().count() > 0);
+    });
+}
+
+#[test]
+fn test_remove_and_add_image() {
+    in_temp_dir!({
+        fixture!("attempt_1.mp3");
+        fixture!("attempt_1.jpg");
+
+        let tag = id3::Tag::read_from_path("attempt_1.mp3").unwrap();
+        assert!(tag.pictures().count() > 0);
+
+        remove_images("attempt_1.mp3").unwrap();
+
+        let tag = id3::Tag::read_from_path("attempt_1.mp3").unwrap();
+        assert!(tag.pictures().count() == 0);
+
+        embed_image("attempt_1.mp3", "attempt_1.jpg").unwrap();
+
+        let tag = id3::Tag::read_from_path("attempt_1.mp3").unwrap();
+        assert!(tag.pictures().count() > 0);
     });
 }

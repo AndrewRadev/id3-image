@@ -19,7 +19,7 @@ pub fn embed_image(music_filename: &str, image_filename: &str) -> Result<(), Box
     });
 
     tag.write_to_path(music_filename, id3::Version::Id3v23).
-        map_err(|e| format!("Error writing image to file: {}", e))?;
+        map_err(|e| format!("Error writing image to music file {}: {}", music_filename, e))?;
 
     Ok(())
 }
@@ -33,12 +33,25 @@ pub fn extract_image(music_filename: &str, image_filename: &str) -> Result<(), B
     if let Some(p) = first_picture {
         match image::load_from_memory(&p.data) {
             Ok(image) => {
-                image.save(&image_filename);
+                image.save(&image_filename).
+                    map_err(|e| format!("Couldn't write image file {}: {}", image_filename, e))?;
                 println!("{}", image_filename);
             },
             Err(e) => return Err(format!("Couldn't load image: {}", e).into()),
         };
     }
+
+    Ok(())
+}
+
+pub fn remove_images(music_filename: &str) -> Result<(), Box<Error>> {
+    let mut tag = id3::Tag::read_from_path(&music_filename).
+        map_err(|e| format!("Error reading music file {}: {}", music_filename, e))?;
+
+    tag.remove("APIC");
+
+    tag.write_to_path(music_filename, id3::Version::Id3v23).
+        map_err(|e| format!("Error updating music file {}: {}", music_filename, e))?;
 
     Ok(())
 }
