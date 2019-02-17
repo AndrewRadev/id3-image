@@ -13,7 +13,7 @@ pub fn embed_image(music_filename: &str, image_filename: &str) -> Result<(), Box
 
     tag.add_picture(id3::frame::Picture {
         mime_type: "image/jpeg".to_string(),
-        picture_type: id3::frame::PictureType::Other,
+        picture_type: id3::frame::PictureType::CoverFront,
         description: String::new(),
         data: encoded_image_bytes,
     });
