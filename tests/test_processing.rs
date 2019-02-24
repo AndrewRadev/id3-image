@@ -18,10 +18,10 @@ impl AsRef<Path> for Fixture {
 }
 
 impl Deref for Fixture {
-    type Target = str;
+    type Target = Path;
 
     fn deref(&self) -> &Self::Target {
-        self.path_buf.to_str().unwrap()
+        self.path_buf.deref()
     }
 }
 
@@ -44,7 +44,7 @@ macro_rules! fixture {
     }
 }
 
-fn read_tag(path: &str) -> id3::Tag {
+fn read_tag(path: &Path) -> id3::Tag {
     id3::Tag::read_from_path(path).unwrap()
 }
 
@@ -54,9 +54,9 @@ fn test_unsuccessful_image_embedding() {
     let image = fixture!("attempt_1.jpg");
 
     // Nonexistent files
-    assert!(embed_image(&song, "nonexisting.jpg").is_err());
-    assert!(embed_image("nonexisting.mp3", &image).is_err());
-    assert!(embed_image("nonexisting.mp3", "nonexisting.jpg").is_err());
+    assert!(embed_image(&song, &PathBuf::from("nonexistent.jpg")).is_err());
+    assert!(embed_image(&PathBuf::from("nonexistent.mp3"), &image).is_err());
+    assert!(embed_image(&PathBuf::from("nonexistent.mp3"), &PathBuf::from("nonexistent.jpg")).is_err());
 
     // Wrong kinds of files
     assert!(embed_image(&image, &song).is_err());
