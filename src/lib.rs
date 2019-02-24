@@ -25,7 +25,7 @@ pub fn embed_image(music_filename: &Path, image_filename: &Path) -> Result<(), B
     Ok(())
 }
 
-pub fn extract_image(music_filename: &Path, image_filename: &Path) -> Result<(), Box<Error>> {
+pub fn extract_first_image(music_filename: &Path, image_filename: &Path) -> Result<(), Box<Error>> {
     let tag = id3::Tag::read_from_path(&music_filename).
         map_err(|e| format!("Error reading music file {:?}: {}", music_filename, e))?;
 

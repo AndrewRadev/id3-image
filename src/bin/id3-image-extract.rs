@@ -2,7 +2,7 @@ use std::process;
 use std::path::PathBuf;
 
 use structopt::StructOpt;
-use id3_image::extract_image;
+use id3_image::extract_first_image;
 
 #[derive(StructOpt, Debug)]
 #[structopt(name = "id3-image-embed")]
@@ -26,7 +26,7 @@ fn main() {
     let image_filename = opt.image_filename.clone().
         unwrap_or_else(|| opt.music_filename.with_extension("jpg"));
 
-    if let Err(e) = extract_image(&opt.music_filename, &image_filename) {
+    if let Err(e) = extract_first_image(&opt.music_filename, &image_filename) {
         eprintln!("{}", e);
         process::exit(1);
     }
