@@ -1,6 +1,11 @@
 use std::path::Path;
 use std::error::Error;
 
+/// Embed the image from `image_filename` into `music_filename`, in-place. Any error reading ID3
+/// tags from the music file or parsing the image get propagated upwards.
+///
+/// The image is encoded as a JPEG with a 90% quality setting. It's embedded as a "Front cover".
+///
 pub fn embed_image(music_filename: &Path, image_filename: &Path) -> Result<(), Box<Error>> {
     let mut tag = id3::Tag::read_from_path(&music_filename).
         map_err(|e| format!("Error reading music file {:?}: {}", music_filename, e))?;
@@ -25,6 +30,12 @@ pub fn embed_image(music_filename: &Path, image_filename: &Path) -> Result<(), B
     Ok(())
 }
 
+/// Extract the first found embedded image from `music_filename` and write as a file with the given
+/// `image_filename`. The image file will be silently overwritten if it exists.
+///
+/// Any errors from parsing id3 tags will be propagated. The function will also return an error if
+/// there's no embedded images in the mp3 file.
+///
 pub fn extract_first_image(music_filename: &Path, image_filename: &Path) -> Result<(), Box<Error>> {
     let tag = id3::Tag::read_from_path(&music_filename).
         map_err(|e| format!("Error reading music file {:?}: {}", music_filename, e))?;
@@ -46,6 +57,11 @@ pub fn extract_first_image(music_filename: &Path, image_filename: &Path) -> Resu
     }
 }
 
+/// Remove all embedded images from the given `music_filename`. In effect, this removes all tags of
+/// type "APIC".
+///
+/// If the mp3 file's ID3 tags can't be parsed, the error will be propagated upwards.
+///
 pub fn remove_images(music_filename: &Path) -> Result<(), Box<Error>> {
     let mut tag = id3::Tag::read_from_path(&music_filename).
         map_err(|e| format!("Error reading music file {:?}: {}", music_filename, e))?;
