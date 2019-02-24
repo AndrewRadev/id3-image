@@ -163,3 +163,17 @@ fn test_overwriting_an_existing_image() {
 
     assert!(image.exists());
 }
+
+#[test]
+fn test_extracting_an_image_with_no_pictures() {
+    let song  = Fixture::copy("attempt_1_no_image.mp3");
+    let image = Fixture::blank("attempt_1.jpg");
+
+    let tag = read_tag(&song);
+    assert!(tag.pictures().count() == 0);
+    assert!(!image.exists());
+
+    assert!(extract_first_image(&song, &image).is_err());
+
+    assert!(!image.exists());
+}

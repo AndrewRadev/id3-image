@@ -39,9 +39,11 @@ pub fn extract_first_image(music_filename: &Path, image_filename: &Path) -> Resu
             },
             Err(e) => return Err(format!("Couldn't load image: {}", e).into()),
         };
-    }
 
-    Ok(())
+        Ok(())
+    } else {
+        Err("No image found in music file".into())
+    }
 }
 
 pub fn remove_images(music_filename: &Path) -> Result<(), Box<Error>> {
