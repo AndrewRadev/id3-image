@@ -88,7 +88,7 @@ image_file=$(zenity --file-selection --filename="$(pwd)/" --title="Select Cover 
 id3-image-embed "$music_file" "$image_file"
 ```
 
-This particular popup doesn't filter by images-only, because I couldn't figure out how to make a generic "image" filter with zenity. You can append a `--file-filter='*.jpg'` flag to show only JPEGs.
+This particular popup doesn't filter by images-only, because I couldn't figure out how to make a generic "image" filter with zenity. You can append `--file-filter='*.jpg'` to zenity to show only JPEGs.
 
 These scripts can be particularly convenient when attached to a GUI file manager. My preferred one, [Thunar](https://docs.xfce.org/xfce/thunar/start), allows "Custom actions" that these two can be plugged in.
 
