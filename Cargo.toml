@@ -7,6 +7,7 @@ description = "A tool to embed images into mp3 files"
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/AndrewRadev/id3-image"
+documentation = "https://docs.rs/id3-image/latest/id3_image"
 keywords = [ "id3", "mp3", "images" ]
 categories = [ "command-line-utilities", "filesystem", "multimedia" ]
 
