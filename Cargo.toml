@@ -3,6 +3,12 @@ name = "id3-image"
 version = "0.1.0"
 authors = ["Andrew Radev <andrey.radev@gmail.com>"]
 edition = "2018"
+description = "A tool to embed images into mp3 files"
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/AndrewRadev/id3-image"
+keywords = [ "id3", "mp3", "images" ]
+categories = [ "command-line-utilities", "filesystem", "multimedia" ]
 
 [dependencies]
 id3 = "0.3.0"
