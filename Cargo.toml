@@ -1,6 +1,6 @@
 [package]
 name = "id3-image"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Andrew Radev <andrey.radev@gmail.com>"]
 edition = "2018"
 description = "A tool to embed images into mp3 files"
