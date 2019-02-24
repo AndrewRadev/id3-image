@@ -5,7 +5,7 @@ authors = ["Andrew Radev <andrey.radev@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-id3 = { git = "https://github.com/jameshurst/rust-id3" }
+id3 = "0.3.0"
 image = "0.21.0"
 structopt = "0.2.14"
 
