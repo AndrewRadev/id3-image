@@ -1,10 +1,11 @@
 use std::path::Path;
 use std::error::Error;
 
-/// Embed the image from `image_filename` into `music_filename`, in-place. Any error reading ID3
+/// Embed the image from `image_filename` into `music_filename`, in-place. Any errors reading ID3
 /// tags from the music file or parsing the image get propagated upwards.
 ///
-/// The image is encoded as a JPEG with a 90% quality setting. It's embedded as a "Front cover".
+/// The image is encoded as a JPEG with a 90% quality setting, and embedded as a "Front cover".
+/// Tags get written as ID3v2.3.
 ///
 pub fn embed_image(music_filename: &Path, image_filename: &Path) -> Result<(), Box<Error>> {
     let mut tag = id3::Tag::read_from_path(&music_filename).
@@ -30,8 +31,8 @@ pub fn embed_image(music_filename: &Path, image_filename: &Path) -> Result<(), B
     Ok(())
 }
 
-/// Extract the first found embedded image from `music_filename` and write as a file with the given
-/// `image_filename`. The image file will be silently overwritten if it exists.
+/// Extract the first found embedded image from `music_filename` and write it as a file with the
+/// given `image_filename`. The image file will be silently overwritten if it exists.
 ///
 /// Any errors from parsing id3 tags will be propagated. The function will also return an error if
 /// there's no embedded images in the mp3 file.
