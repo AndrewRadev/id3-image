@@ -16,4 +16,4 @@ image = "0.21.0"
 structopt = "0.2.14"
 
 [dev-dependencies]
-tempfile = "*"
+tempfile = "3.0.6"
