@@ -1,4 +1,6 @@
-This tool wraps the [rust-id3](https://github.com/jameshurst/rust-id3) library to provide an easy way to manipulate embedded cover art in an mp3 file. It was made for my own personal usage, so it likely makes assumptions that are not ideal for all cases. If it doesn't work for you, please open [a github issue](https://github.com/AndrewRadev/id3-image/issues).
+This tool wraps the [rust-id3](https://github.com/jameshurst/rust-id3) library to provide an easy way to manipulate embedded cover art in an mp3 file. The embedded image usually gets picked up by music players and thumbnail generators.
+
+The project was made for my own personal usage, so it likely makes assumptions that are not ideal for all cases. If it doesn't work for you, please open [a github issue](https://github.com/AndrewRadev/id3-image/issues).
 
 It comes with three executables:
 
@@ -102,3 +104,4 @@ Elevator Music Attempt 1 by Christian Bakker: http://www.jamendo.com/en/list/a98
 - Allow different output formats
 - Allow different ID3 versions
 - Allow embedding/extracting multiple images (currently, on the first one is extracted)
+- Replace structopt + clap with a simpler CLI solution -- a lot of dependencies for a simple project
