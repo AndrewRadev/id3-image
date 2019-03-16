@@ -11,6 +11,9 @@ documentation = "https://docs.rs/id3-image/latest/id3_image"
 keywords = [ "id3", "mp3", "images" ]
 categories = [ "command-line-utilities", "filesystem", "multimedia" ]
 
+[badges]
+travis-ci = { repository = "AndrewRadev/id3-image" }
+
 [dependencies]
 id3 = "0.3.0"
 image = "0.21.0"
