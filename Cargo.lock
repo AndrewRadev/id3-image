@@ -300,7 +300,7 @@ dependencies = [
 
 [[package]]
 name = "id3-image"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "id3 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "image 0.22.3 (registry+https://github.com/rust-lang/crates.io-index)",
