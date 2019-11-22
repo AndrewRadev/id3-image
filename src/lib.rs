@@ -7,7 +7,7 @@ use std::error::Error;
 /// The image is encoded as a JPEG with a 90% quality setting, and embedded as a "Front cover".
 /// Tags get written as ID3v2.3.
 ///
-pub fn embed_image(music_filename: &Path, image_filename: &Path) -> Result<(), Box<Error>> {
+pub fn embed_image(music_filename: &Path, image_filename: &Path) -> Result<(), Box<dyn Error>> {
     let mut tag = id3::Tag::read_from_path(&music_filename).
         map_err(|e| format!("Error reading music file {:?}: {}", music_filename, e))?;
 
@@ -37,7 +37,7 @@ pub fn embed_image(music_filename: &Path, image_filename: &Path) -> Result<(), B
 /// Any errors from parsing id3 tags will be propagated. The function will also return an error if
 /// there's no embedded images in the mp3 file.
 ///
-pub fn extract_first_image(music_filename: &Path, image_filename: &Path) -> Result<(), Box<Error>> {
+pub fn extract_first_image(music_filename: &Path, image_filename: &Path) -> Result<(), Box<dyn Error>> {
     let tag = id3::Tag::read_from_path(&music_filename).
         map_err(|e| format!("Error reading music file {:?}: {}", music_filename, e))?;
 
@@ -63,7 +63,7 @@ pub fn extract_first_image(music_filename: &Path, image_filename: &Path) -> Resu
 ///
 /// If the mp3 file's ID3 tags can't be parsed, the error will be propagated upwards.
 ///
-pub fn remove_images(music_filename: &Path) -> Result<(), Box<Error>> {
+pub fn remove_images(music_filename: &Path) -> Result<(), Box<dyn Error>> {
     let mut tag = id3::Tag::read_from_path(&music_filename).
         map_err(|e| format!("Error reading music file {:?}: {}", music_filename, e))?;
 
