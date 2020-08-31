@@ -15,9 +15,9 @@ categories = [ "command-line-utilities", "filesystem", "multimedia" ]
 travis-ci = { repository = "AndrewRadev/id3-image" }
 
 [dependencies]
-id3 = "0.3.0"
-image = "0.22.3"
-structopt = { version = "0.3.5", default-features = false }
+id3 = "0.5"
+image = "0.23"
+structopt = { version = "0.3", default-features = false }
 
 [dev-dependencies]
-tempfile = "3.0.6"
+tempfile = "3.1"
