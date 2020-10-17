@@ -15,19 +15,22 @@ struct Opt {
     #[structopt(name = "music-file.mp3", required = true, parse(from_os_str))]
     music_filename: PathBuf,
 
-    /// Image file to embed
-    #[structopt(name = "image-file.jpg", required = true, parse(from_os_str))]
-    image_filename: PathBuf,
+    /// Image file to embed. If not given, will default to the music filename with a .jpg extension
+    #[structopt(name = "image-file.jpg", parse(from_os_str))]
+    image_filename: Option<PathBuf>,
 }
 
 fn main() {
     let opt = Opt::from_args();
+    let music_filename = opt.music_filename;
+    let image_filename = opt.image_filename.
+        unwrap_or_else(|| music_filename.with_extension("jpg"));
 
-    if let Err(e) = embed_image(&opt.music_filename, &opt.image_filename) {
+    if let Err(e) = embed_image(&music_filename, &image_filename) {
         eprintln!("{}", e);
         process::exit(1);
     }
     if opt.verbose >= 1 {
-        println!("Embedded {:?} into {:?}", opt.image_filename, opt.music_filename);
+        println!("Embedded {:?} into {:?}", image_filename, music_filename);
     }
 }
