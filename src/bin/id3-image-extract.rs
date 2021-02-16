@@ -9,7 +9,11 @@ use id3_image::extract_first_image;
 struct Opt {
     /// Verbose mode (-v, -vv, -vvv, etc.)
     #[structopt(short = "v", long = "verbose", parse(from_occurrences))]
-    verbose: u8,
+    verbose: i8,
+
+    /// Quiet mode, implies no verbosity, and also no error explanations
+    #[structopt(short = "q", long = "quiet")]
+    quiet: bool,
 
     /// Music file to extract image from
     #[structopt(name = "music-file.mp3", required = true, parse(from_os_str))]
@@ -22,19 +26,22 @@ struct Opt {
 
 fn main() {
     let opt = Opt::from_args();
+    let verbosity = if opt.quiet { -1 } else { opt.verbose };
 
     let image_filename = opt.image_filename.clone().
         unwrap_or_else(|| opt.music_filename.with_extension("jpg"));
 
     if let Err(e) = extract_first_image(&opt.music_filename, &image_filename) {
-        eprintln!("{}", e);
+        if verbosity >= 0 {
+            eprintln!("{}", e);
+        }
         process::exit(1);
     }
 
-    if opt.verbose == 1 {
+    if verbosity == 1 {
         // then just print the output filename for scripting purposes:
         println!("{}", image_filename.display());
-    } else if opt.verbose >= 2 {
+    } else if verbosity >= 2 {
         // show a longer status message:
         println!("Extracted cover art from {:?} to {:?}", opt.music_filename, image_filename);
     }
