@@ -33,7 +33,7 @@ fn main() {
     if verbosity >= 0 && confirm {
         print_prompt();
         let mut input = String::new();
-        while let Err(_) = io::stdin().read_line(&mut input) {
+        while io::stdin().read_line(&mut input).is_err() {
             if verbosity >= 0 {
                 eprintln!("Could not read your input, please try again.");
             }
