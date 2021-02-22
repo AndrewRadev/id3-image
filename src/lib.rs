@@ -1,5 +1,6 @@
 use std::path::Path;
-use std::error::Error;
+
+use anyhow::anyhow;
 
 /// Embed the image from `image_filename` into `music_filename`, in-place. Any errors reading ID3
 /// tags from the music file or parsing the image get propagated upwards.
@@ -7,12 +8,10 @@ use std::error::Error;
 /// The image is encoded as a JPEG with a 90% quality setting, and embedded as a "Front cover".
 /// Tags get written as ID3v2.3.
 ///
-pub fn embed_image(music_filename: &Path, image_filename: &Path) -> Result<(), Box<dyn Error>> {
-    let mut tag = id3::Tag::read_from_path(&music_filename).
-        map_err(|e| format!("Error reading music file {:?}: {}", music_filename, e))?;
-
+pub fn embed_image(music_filename: &Path, image_filename: &Path) -> anyhow::Result<()> {
+    let mut tag = read_tag(music_filename)?;
     let image = image::open(&image_filename).
-        map_err(|e| format!("Error reading image {:?}: {}", image_filename, e))?;
+        map_err(|e| anyhow!("Error reading image {:?}: {}", image_filename, e))?;
 
     let mut encoded_image_bytes = Vec::new();
     // Unwrap: Writing to a Vec should always succeed;
@@ -26,7 +25,7 @@ pub fn embed_image(music_filename: &Path, image_filename: &Path) -> Result<(), B
     });
 
     tag.write_to_path(music_filename, id3::Version::Id3v23).
-        map_err(|e| format!("Error writing image to music file {:?}: {}", music_filename, e))?;
+        map_err(|e| anyhow!("Error writing image to music file {:?}: {}", music_filename, e))?;
 
     Ok(())
 }
@@ -37,24 +36,22 @@ pub fn embed_image(music_filename: &Path, image_filename: &Path) -> Result<(), B
 /// Any errors from parsing id3 tags will be propagated. The function will also return an error if
 /// there's no embedded images in the mp3 file.
 ///
-pub fn extract_first_image(music_filename: &Path, image_filename: &Path) -> Result<(), Box<dyn Error>> {
-    let tag = id3::Tag::read_from_path(&music_filename).
-        map_err(|e| format!("Error reading music file {:?}: {}", music_filename, e))?;
-
+pub fn extract_first_image(music_filename: &Path, image_filename: &Path) -> anyhow::Result<()> {
+    let tag = read_tag(music_filename)?;
     let first_picture = tag.pictures().next();
 
     if let Some(p) = first_picture {
         match image::load_from_memory(&p.data) {
             Ok(image) => {
                 image.save(&image_filename).
-                    map_err(|e| format!("Couldn't write image file {:?}: {}", image_filename, e))?;
+                    map_err(|e| anyhow!("Couldn't write image file {:?}: {}", image_filename, e))?;
             },
-            Err(e) => return Err(format!("Couldn't load image: {}", e).into()),
+            Err(e) => return Err(anyhow!("Couldn't load image: {}", e)),
         };
 
         Ok(())
     } else {
-        Err("No image found in music file".into())
+        Err(anyhow!("No image found in music file"))
     }
 }
 
@@ -63,14 +60,19 @@ pub fn extract_first_image(music_filename: &Path, image_filename: &Path) -> Resu
 ///
 /// If the mp3 file's ID3 tags can't be parsed, the error will be propagated upwards.
 ///
-pub fn remove_images(music_filename: &Path) -> Result<(), Box<dyn Error>> {
-    let mut tag = id3::Tag::read_from_path(&music_filename).
-        map_err(|e| format!("Error reading music file {:?}: {}", music_filename, e))?;
-
+pub fn remove_images(music_filename: &Path) -> anyhow::Result<()> {
+    let mut tag = read_tag(music_filename)?;
     tag.remove("APIC");
 
     tag.write_to_path(music_filename, id3::Version::Id3v23).
-        map_err(|e| format!("Error updating music file {:?}: {}", music_filename, e))?;
+        map_err(|e| anyhow!("Error updating music file {:?}: {}", music_filename, e))?;
 
     Ok(())
+}
+
+fn read_tag(path: &Path) -> anyhow::Result<id3::Tag> {
+    id3::Tag::read_from_path(&path).or_else(|e| {
+        eprintln!("Warning: file metadata is corrupted, trying to read partial tag: {}", path.display());
+        e.partial_tag.clone().ok_or_else(|| anyhow!("Error reading music file {:?}: {}", path, e))
+    })
 }

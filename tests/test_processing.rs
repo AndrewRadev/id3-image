@@ -76,6 +76,17 @@ fn test_successful_jpeg_image_embedding() {
 }
 
 #[test]
+fn test_successful_jpeg_image_embedding_with_a_broken_file() {
+    let song  = Fixture::copy("attempt_1_broken.mp3");
+    let image = Fixture::copy("attempt_1.jpg");
+
+    embed_image(&song, &image).unwrap();
+
+    let tag = read_tag(&song);
+    assert!(tag.pictures().count() > 0);
+}
+
+#[test]
 fn test_successful_png_image_embedding() {
     let song  = Fixture::copy("attempt_1_no_image.mp3");
     let image = Fixture::copy("attempt_1.png");
@@ -123,6 +134,22 @@ fn test_removing_and_adding_an_image() {
 }
 
 #[test]
+fn test_removing_and_adding_an_image_to_a_broken_file() {
+    let song  = Fixture::copy("attempt_1_broken.mp3");
+    let image = Fixture::copy("attempt_1.jpg");
+
+    remove_images(&song).unwrap();
+
+    let tag = read_tag(&song);
+    assert!(tag.pictures().count() == 0);
+
+    embed_image(&song, &image).unwrap();
+
+    let tag = read_tag(&song);
+    assert!(tag.pictures().count() > 0);
+}
+
+#[test]
 fn test_extracting_a_jpg_image() {
     let song  = Fixture::copy("attempt_1.mp3");
     let image = Fixture::blank("attempt_1.jpg");
@@ -130,6 +157,16 @@ fn test_extracting_a_jpg_image() {
     let tag = read_tag(&song);
     assert!(tag.pictures().count() > 0);
     assert!(!image.exists());
+
+    extract_first_image(&song, &image).unwrap();
+
+    assert!(image.exists());
+}
+
+#[test]
+fn test_extracting_a_jpg_image_from_a_broken_file() {
+    let song  = Fixture::copy("attempt_1_broken.mp3");
+    let image = Fixture::blank("attempt_1.jpg");
 
     extract_first_image(&song, &image).unwrap();
 
