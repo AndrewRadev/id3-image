@@ -17,12 +17,14 @@ A summary of their usage follows. You can also execute them with `--help` for ad
 To embed an image into an mp3 file, use `id3-image-embed`:
 
 ```
-id3-image-embed <music-file.mp3> <image-file.jpg>
+id3-image-embed <music-file.mp3> [image-file.jpg]
 ```
 
 The image doesn't *have* to be a JPEG, anything that the [image](https://github.com/PistonDevelopers/image) library accepts will work. It will, however, be embedded as a JPEG for no particular reason other than seeming like a sensible default choice.
 
 The ID3 tags will be stored as ID3v2.3, and written in-place in the music file.
+
+The image filepath is optional -- if omitted, the program is going to look for an image with the same name, but with a "jpg" extension. This is a bit specific, but fits with the default extraction filename, making it easy to extract &rarr; edit &rarr; embed.
 
 ## Extracting
 
@@ -105,5 +107,5 @@ Elevator Music Attempt 1 by Christian Bakker: http://www.jamendo.com/en/list/a98
 - Don't silently overwrite images when extracting
 - Allow different output formats
 - Allow different ID3 versions
-- Allow embedding/extracting multiple images (currently, on the first one is extracted)
+- Allow embedding/extracting multiple images (currently, only the first one is extracted)
 - Replace structopt + clap with a simpler CLI solution -- a lot of dependencies for a simple project
