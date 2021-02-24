@@ -1,3 +1,8 @@
+#![warn(missing_docs)]
+
+//! A command-line tool to embed images into mp3 files. The real work is done by the "id3" crate,
+//! but this project makes it easier to deal with embedded cover art in particular.
+
 use std::path::Path;
 
 use anyhow::anyhow;
