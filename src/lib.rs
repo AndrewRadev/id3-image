@@ -6,6 +6,7 @@
 use std::path::Path;
 
 use anyhow::anyhow;
+use id3::TagLike;
 
 /// Embed the image from `image_filename` into `music_filename`, in-place. Any errors reading ID3
 /// tags from the music file or parsing the image get propagated upwards.
@@ -22,7 +23,7 @@ pub fn embed_image(music_filename: &Path, image_filename: &Path) -> anyhow::Resu
     // Unwrap: Writing to a Vec should always succeed;
     image.write_to(&mut encoded_image_bytes, image::ImageOutputFormat::Jpeg(90)).unwrap();
 
-    tag.add_picture(id3::frame::Picture {
+    tag.add_frame(id3::frame::Picture {
         mime_type: "image/jpeg".to_string(),
         picture_type: id3::frame::PictureType::CoverFront,
         description: String::new(),
