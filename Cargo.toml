@@ -12,7 +12,7 @@ keywords = [ "id3", "mp3", "images" ]
 categories = [ "command-line-utilities", "filesystem", "multimedia" ]
 
 [badges]
-travis-ci = { repository = "AndrewRadev/id3-image" }
+circle-ci = { repository = "AndrewRadev/id3-image" }
 
 [dependencies]
 anyhow = "1.0.57"

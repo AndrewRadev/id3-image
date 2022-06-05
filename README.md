@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/AndrewRadev/id3-image.svg?branch=main)](https://travis-ci.org/AndrewRadev/id3-image)
+[![Build Status](https://circleci.com/gh/AndrewRadev/id3-image/tree/main.svg?style=shield)](https://circleci.com/gh/AndrewRadev/id3-image?branch=main)
 
 This tool wraps the [rust-id3](https://github.com/jameshurst/rust-id3) library to provide an easy way to manipulate embedded cover art in an mp3 file. The embedded image usually gets picked up by music players and thumbnail generators.
 
