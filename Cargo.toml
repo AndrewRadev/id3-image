@@ -2,7 +2,7 @@
 name = "id3-image"
 version = "0.3.0"
 authors = ["Andrew Radev <andrey.radev@gmail.com>"]
-edition = "2018"
+edition = "2021"
 description = "A tool to embed images into mp3 files"
 license = "MIT"
 readme = "README.md"
