@@ -4,6 +4,7 @@
 //! but this project makes it easier to deal with embedded cover art in particular.
 
 use std::path::Path;
+use std::io::Cursor;
 
 use anyhow::anyhow;
 use id3::TagLike;
@@ -19,7 +20,7 @@ pub fn embed_image(music_filename: &Path, image_filename: &Path) -> anyhow::Resu
     let image = image::open(&image_filename).
         map_err(|e| anyhow!("Error reading image {:?}: {}", image_filename, e))?;
 
-    let mut encoded_image_bytes = Vec::new();
+    let mut encoded_image_bytes = Cursor::new(Vec::new());
     // Unwrap: Writing to a Vec should always succeed;
     image.write_to(&mut encoded_image_bytes, image::ImageOutputFormat::Jpeg(90)).unwrap();
 
@@ -27,7 +28,7 @@ pub fn embed_image(music_filename: &Path, image_filename: &Path) -> anyhow::Resu
         mime_type: "image/jpeg".to_string(),
         picture_type: id3::frame::PictureType::CoverFront,
         description: String::new(),
-        data: encoded_image_bytes,
+        data: encoded_image_bytes.into_inner(),
     });
 
     tag.write_to_path(music_filename, id3::Version::Id3v23).
