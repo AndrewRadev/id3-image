@@ -22,7 +22,7 @@ pub fn embed_image(music_filename: &Path, image_filename: &Path) -> anyhow::Resu
 
     let mut encoded_image_bytes = Cursor::new(Vec::new());
     // Unwrap: Writing to a Vec should always succeed;
-    image.write_to(&mut encoded_image_bytes, image::ImageOutputFormat::Jpeg(90)).unwrap();
+    image.write_to(&mut encoded_image_bytes, image::ImageFormat::Jpeg).unwrap();
 
     tag.add_frame(id3::frame::Picture {
         mime_type: "image/jpeg".to_string(),

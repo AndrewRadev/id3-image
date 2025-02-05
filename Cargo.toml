@@ -15,9 +15,9 @@ categories = [ "command-line-utilities", "filesystem", "multimedia" ]
 circle-ci = { repository = "AndrewRadev/id3-image" }
 
 [dependencies]
-anyhow = "1.0.66"
-id3 = "1.5.1"
-image = "0.24.5"
+anyhow = "1.0.95"
+id3 = "1.16.1"
+image = "0.25.5"
 structopt = { version = "0.3.26", default-features = false }
 
 [dev-dependencies]
